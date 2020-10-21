@@ -2,7 +2,7 @@
     <v-app>
         <v-navigation-drawer
             v-model="drawer.isOpen"
-            color="blue"
+            color="blue darken-4"
             dark
             width="200px"
             app
@@ -33,6 +33,7 @@
             clipped-left 
             dense
             dark
+            src="https://upload.wikimedia.org/wikipedia/commons/thumb/b/bb/POEA.svg/1200px-POEA.svg.png"
         >
             <v-app-bar-nav-icon
                 @click.stop="drawer.isOpen = !drawer.isOpen"
@@ -74,8 +75,43 @@ export default {
 }
 </script>
 <style>
-    .v-list-item--link {
+    a {
         text-decoration: none!important;
+    }
+
+    /* width */
+    ::-webkit-scrollbar {
+      width: 10px;
+    }
+    #nd-container::-webkit-scrollbar {
+      display: none;
+    }
+    
+    /* Track */
+    ::-webkit-scrollbar-track {
+      background: transparent;
+      border-radius: 8px;
+    }
+     
+    /* Handle */
+    ::-webkit-scrollbar-thumb {
+      background: #f1f1f1;
+      border-radius: 8px;
+    }
+    
+    /* Handle on hover */
+    ::-webkit-scrollbar-thumb:hover {
+      background: #555; 
+    }
+    html {
+      overflow-y: hidden;
+    }
+    body {
+        -webkit-user-select: none;
+        -khtml-user-select: none;
+        -moz-user-select: none;
+        -o-user-select: none;
+        user-select: none;
     }
 
 </style>

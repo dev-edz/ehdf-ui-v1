@@ -1,77 +1,106 @@
 <template>
     <div id="Logs">
-        <v-row class="mx-auto">
-            <v-col 
-                cols="8">
-                <v-card outlined>
-                    <v-card-title>
-                        Logs
-                    </v-card-title>
-                    <v-card-text>
-                        <v-data-table
-                            :headers="dataTable.headers"
-                            :items="dataTable.items"
-                            fixed-header
-                            hover
-                            height="72vh"
-                            outline
-                        >
-                            
-                        </v-data-table>
-                    </v-card-text>
-                </v-card>
-            </v-col>
-            <v-col cols="4">
-                <v-card outlined>
-                    <v-card-title>
-                        Latest Entry
-                    </v-card-title>
-                </v-card>
-            </v-col>
-        </v-row>
+        <v-container fluid>
+            <v-card outlined class="mx-auto mb-4">
+                <v-card-title>Latest Log</v-card-title>
+                <v-card-text>
+                    <v-row>
+                        <v-col cols="6">
+                            dwad
+                        </v-col>
+                        <v-col cols="6">
+                            dwadaw
+                        </v-col>
+                    </v-row>
+                </v-card-text>
+            </v-card>
+            <v-card outlined class="mx-auto mb-0">
+                <v-card-title>Data Logs</v-card-title>
+                <v-card-text>
+                    <v-data-table
+                        class="table-striped text-uppercase"
+                        :headers="dataTable.headers"
+                        :items="indexedItems"
+                        :loading="loading"
+                        :items-per-page="-1"
+                        fixed-header
+                        hover
+                        height="55vh"
+                        outline
+                    >
+                    </v-data-table>
+                </v-card-text>
+            </v-card>
+        </v-container>
     </div>
 </template>
 <script>
 export default {
     data(){
         return {
-            
+            loading: false,
             dataTable: {
                 headers: [
                     {
-                        text: 'No.',
+                        text: 'No',
                         align: 'center',
-                        sortable: true,
+                        sortable: false,
                         value: 'id',
-                        divider: true
+                        divider: true,
+                        width: '10%',
                     },
                     {
                         text: 'Fullname',
                         align: 'start',
                         sortable: false,
-                        value: 'applicant',
+                        value: 'fullname',
                         divider: true
                     },
                     {
                         text: 'Office',
-                        align: 'start',
+                        align: 'center',
                         sortable: true,
-                        value: 'office',
+                        value: 'Office',
                         divider: true
                     },
                     {
                         text: 'Date & Time',
                         align: 'center',
                         sortable: false,
-                        value: 'date_time',
-                        divider: false
+                        value: 'DateCreated',
+                        divider: false,
+                        width: '20%',
                     },
                 ],
-                items: [
-                    { id: 1, applicant: 'Eduardo M. Lazaro III', office: 'POEA', date_time: 'date time now' }
-                ]
+                items: []
             }
         }
+    },
+    computed: {
+        indexedItems () {
+            return this.dataTable.items.map((item, index) => ({
+                id: index + 1,
+                fullname: item.USERFULLNAME || (item.FirstName + ' ' + item.MiddleName + ' ' + item.LastName + ' ' + item.SuffixName),
+                ...item
+            }))
+        }
+    },
+    methods: {
+        loadTransactions(){
+            this.loading = true;
+            window.vue.prototype.$http.get('/api/transactions')
+            .then(response => {
+                this.dataTable.items = response.data;
+                // this.dataTable.items["DateCreated"] = response.data["DateCreated"]
+                this.loading = false;
+                console.log(response.data);
+            }).catch(error => {
+                console.log(error);
+            })
+        }
+    },
+    mounted(){
+        this.loadTransactions();
     }
 }
 </script>
