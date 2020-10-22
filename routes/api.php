@@ -17,4 +17,8 @@ use App\Http\Controllers\HDFController;
 */
 
 Route::get('persons', [HDFController::class, 'getPersons']);
+Route::get('newpersons', [HDFController::class, 'getNewPersons']);
 Route::get('transactions', [HDFController::class, 'getTransactions']);
+Route::get('summary/persons', [HDFController::class, 'getRegisteredUserByDate']);
+Route::get('summary/transactions', [HDFController::class, 'getAllTransactionByDate']);
+Route::get('summary/newpersons', [HDFController::class, 'getLatestPersons']);

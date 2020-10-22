@@ -5,6 +5,7 @@ import vuetify from './plugins/vuetify'
 import App from './App.vue';
 import Axios from 'axios';
 
+import img from '../img/ehdf_info.png';
 
 Vue.prototype.$http = Axios;
 window.vue = Vue;

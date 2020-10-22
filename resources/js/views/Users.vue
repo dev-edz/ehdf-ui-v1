@@ -1,31 +1,18 @@
 <template>
-    <div id="Logs">
+    <div id="Users">
         <v-container fluid>
-            <v-card outlined class="mx-auto mb-4">
-                <v-card-title>Latest Log</v-card-title>
-                <v-card-text>
-                    <v-row>
-                        <v-col cols="6">
-                            dwad
-                        </v-col>
-                        <v-col cols="6">
-                            dwadaw
-                        </v-col>
-                    </v-row>
-                </v-card-text>
-            </v-card>
-            <v-card outlined class="mx-auto mb-0">
-                <v-card-title>Data Logs</v-card-title>
+            <v-card class="mx-auto" height="75vh" outlined>
+                <v-card-title class="green pa-2 ma-2 white--text justify-center">USER TABLE</v-card-title>
                 <v-card-text>
                     <v-data-table
                         class="table-striped text-uppercase"
                         :headers="dataTable.headers"
-                        :items="indexedItems"
+                        :items="dataTable.items"
                         :loading="loading"
                         :items-per-page="-1"
                         fixed-header
                         hover
-                        height="55vh"
+                        height="60vh"
                         outline
                     >
                     </v-data-table>
@@ -72,35 +59,10 @@ export default {
                         width: '20%',
                     },
                 ],
-                items: []
+                items: [],
+                refreshInterval: '',
             }
         }
     },
-    computed: {
-        indexedItems () {
-            return this.dataTable.items.map((item, index) => ({
-                id: index + 1,
-                fullname: item.USERFULLNAME || (item.FirstName + ' ' + item.MiddleName + ' ' + item.LastName + ' ' + item.SuffixName),
-                ...item
-            }))
-        }
-    },
-    methods: {
-        loadTransactions(){
-            this.loading = true;
-            window.vue.prototype.$http.get('/api/transactions')
-            .then(response => {
-                this.dataTable.items = response.data;
-                // this.dataTable.items["DateCreated"] = response.data["DateCreated"]
-                this.loading = false;
-                console.log(response.data);
-            }).catch(error => {
-                console.log(error);
-            })
-        }
-    },
-    mounted(){
-        this.loadTransactions();
-    }
 }
 </script>

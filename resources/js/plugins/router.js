@@ -1,7 +1,8 @@
 import Vue from 'vue';
 import VueRouter from 'vue-router';
 import Dashboard from '../views/Dashboard.vue';
-import Logs from '../views/Logs.vue'
+import Monitoring from '../views/Monitoring.vue'
+import Users from '../views/Users.vue'
 
 Vue.use(VueRouter);
 
@@ -12,9 +13,14 @@ const routes = [
     name: 'dashboard'
   },
   {
-    path: '/logs',
-    component: Logs,
-    name: 'logs'
+    path: '/monitoring',
+    component: Monitoring,
+    name: 'monitoring'
+  },
+  {
+    path: '/users',
+    component: Users,
+    name: 'users'
   },
 ];
 

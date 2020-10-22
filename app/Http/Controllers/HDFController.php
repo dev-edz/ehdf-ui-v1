@@ -4,12 +4,23 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
+use Carbon\Carbon;
 
 class HDFController extends Controller
 {
     public function getPersons(){
         $persons = DB::select('select * from tblhperson', [1]);
         return $persons;
+    }
+
+    public function getNewPersons(){
+        $date = \Carbon\Carbon::today();
+        $newPersons = DB::table('tblhperson')
+                ->select()
+                ->where('DateCreated', '>=', $date)
+                ->orderBy('DateCreated', 'asc')
+                ->get();
+        return $newPersons;
     }
 
     public function getTransactions(){
@@ -28,35 +39,51 @@ class HDFController extends Controller
                         'tblhperson.FirstName',
                         'tblhperson.MiddleName',
                         'tblhperson.LastName',
-                        'tblhperson.SuffixName'
+                        'tblhperson.SuffixName',
+                        'tblhtransaction.Temperature',
                     )
                     ->orderBy('tblhtransaction.DateCreated', 'desc')
                     ->get();
                     
-                    
-                
-        // $transactions = DB::table('tblhperson')
-        //     ->join(
-        //             'tblhtransaction', 
-        //             'tblhtransaction.PersonID', '=', 'tblhperson.Id'
-        //         )
-        //     // ->leftjoin(
-        //     //         'libcombinedoffices', 
-        //     //         'libcombinedoffices.Id', '=', 'tblhtransaction.OfficeVisit'
-        //     //     )
-        //     ->join(
-        //             'tbluserinfo', 
-        //             'tblhtransaction.UserInfoID', '=', 'tbluserinfo.userinfoid'
-        //         )
-        //     ->select(
-        //             'tblhtransaction.Id', 
-        //             DB::raw("CONCAT (
-        //                 tblhperson.FirstName,' ',tblhperson.MiddleName,' ',tblhperson.LastName,' ',tblhperson.SuffixName) As FullName"), 
-        //             'tblhtransaction.DateCreated',
-        //             'tbluserinfo.userfullname'
-        //             // 'libcombinedoffices.Office',
-        //         )
-        //     ->get();
         return $transactions;
+    }
+
+    public function getRegisteredUserByDate(){
+        $date = \Carbon\Carbon::today()->subDays(8);
+        $registered_user = DB::table('tblhperson')
+                ->select()
+                ->where('DateCreated', '>=', $date)
+                ->orderBy('DateCreated', 'asc')
+                ->get()
+                ->groupBy(function($item) {
+                    return Carbon::parse($item->DateCreated)->format('M-d');
+                });
+        return $registered_user;
+    }
+
+    public function getAllTransactionByDate(){
+        $date = \Carbon\Carbon::today();
+        $transactions = DB::table('tblhtransaction')
+                ->select()
+                ->where('DateCreated', '<=', $date)
+                ->orderBy('DateCreated', 'asc')
+                ->get()
+                ->groupBy(function($item) {
+                    return Carbon::parse($item->DateCreated)->format('M-d');
+                });
+        return $transactions;
+    }
+
+    public function getLatestPersons(){
+        $date = \Carbon\Carbon::today();
+        $newPersons = DB::table('tblhperson')
+                ->select()
+                ->where('DateCreated', '>=', $date)
+                ->orderBy('DateCreated', 'asc')
+                ->get()
+                ->groupBy(function($item) {
+                    return Carbon::parse($item->DateCreated)->format('H:i');
+                });
+        return $newPersons;
     }
 }

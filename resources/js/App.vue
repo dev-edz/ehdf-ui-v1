@@ -2,15 +2,14 @@
     <v-app>
         <v-navigation-drawer
             v-model="drawer.isOpen"
-            color="blue darken-4"
+            color=""
             dark
-            width="200px"
+            width="180px"
             app
             clipped
             overflow
         >
-            <v-list 
-                nav>
+            <v-list>
                 <v-list-item
                     v-for="([text, icon, route], i) in drawer.navItems"
                     :key="i"
@@ -30,15 +29,14 @@
         <v-app-bar 
             color="blue darken-1"
             app 
-            clipped-left 
-            dense
+            clipped-left
+            dense 
             dark
-            src="https://upload.wikimedia.org/wikipedia/commons/thumb/b/bb/POEA.svg/1200px-POEA.svg.png"
         >
             <v-app-bar-nav-icon
                 @click.stop="drawer.isOpen = !drawer.isOpen"
             ></v-app-bar-nav-icon>
-            <v-toolbar-title>POEA - electronic Health Declaration Form Portal</v-toolbar-title>
+            <v-toolbar-title>POEA - Health Declaration Information Portal</v-toolbar-title>
             <v-spacer></v-spacer>
             <v-btn 
                 icon
@@ -50,8 +48,16 @@
         </v-app-bar>
 
         <v-main>
-            <router-view class="px-2"></router-view>
+            <router-view></router-view>
         </v-main>
+        <v-footer app dark fixed height="25" class="pa-0">
+            <v-col
+                class="text-center pa-0"
+                cols="12"
+            >
+                {{ new Date().getFullYear() }} — <strong>POEA - ICT</strong>
+            </v-col>
+        </v-footer>
     </v-app>
 </template>
 <script>
@@ -62,7 +68,8 @@ export default {
                 isOpen: true,
                 navItems: [
                     ['Dashboard', 'mdi-view-dashboard-outline', '/'],
-                    ['Logs', 'mdi-clipboard-list-outline', '/logs'],
+                    ['Monitoring', 'mdi-clipboard-list-outline', '/monitoring'],
+                    ['Users', 'mdi-account', '/users'],
                 ]
             },
         }
@@ -95,7 +102,7 @@ export default {
      
     /* Handle */
     ::-webkit-scrollbar-thumb {
-      background: #f1f1f1;
+      background: #a5a5a5;
       border-radius: 8px;
     }
     
@@ -104,7 +111,7 @@ export default {
       background: #555; 
     }
     html {
-      overflow-y: hidden;
+      overflow-y: auto;
     }
     body {
         -webkit-user-select: none;
