@@ -11,13 +11,13 @@
                         FULLNAME: <div class="title text-uppercase">{{ indexedItems[0].fullname }}</div>
                     </v-col>
                     <v-col cols="12" sm="12" md="3">
-                        TEMPERATURE: <div class="title text-uppercase">{{ indexedItems[0].Temperature }}</div>
+                        TEMPERATURE: <div class="display-2 text-uppercase">{{ indexedItems[0].Temperature }}</div>
                     </v-col>
                     <v-col cols="12" sm="12" md="3">
                         TIMESTAMP: <div class="title text-uppercase">{{ indexedItems[0].DateCreated }}</div>
                     </v-col>
                     <v-col cols="12" sm="12" md="3">
-                        CURRENT TIME: <div class="title text-uppercase">{{ indexedItems[0].DateCreated }}</div>
+                        CURRENT TIME: <div class="display-2 text-uppercase">{{ realtimeClock }}</div>
                     </v-col>
                 </v-row>
             </v-card-text>
@@ -47,6 +47,8 @@ export default {
     data(){
         return {
             loading: false,
+            realtimeClock: '',
+            clockInterval: '',
             dataTable: {
                 headers: [
                     {
@@ -115,9 +117,26 @@ export default {
                 console.log(error);
             })
         },
+        getCurrentTime(){
+            var self = this;
+            this.clockInterval = setInterval(function(){
+                var today = new Date();
+                var h = today.getHours();
+                var m = today.getMinutes();
+                var s = today.getSeconds();
+                m = self.checkTime(m);
+                s = self.checkTime(s);
+                self.realtimeClock = h + ":" + m + ":" + s;
+            }, 500);
+        },
+        checkTime(t){
+            if (t < 10) {t = "0" + t};  // add zero in front of numbers < 10
+            return t;
+        }
 
     },
     mounted(){
+        this.getCurrentTime();
         this.loadTransactions();
 
         this.refreshInterval = setInterval(function(){
@@ -127,6 +146,7 @@ export default {
     },
     beforeDestroy(){
         clearInterval(this.refreshInterval);
+        clearInterval(this.clockInterval);
     }
 }
 </script>

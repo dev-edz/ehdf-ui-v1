@@ -21,13 +21,15 @@ module.exports = {
             test: /\.(png|jpg|gif)$/i,
             use: [
             {
-                loader: 'url-loader',
+                loader: 'file-loader',
                 options: {
-                limit: 8192,
+                    name: '[path][name].[ext]',
+                    outputPath: 'images',
+                    limit: 8192,
                 },
             },
             ],
         },
         ],
     },
-    };
+};

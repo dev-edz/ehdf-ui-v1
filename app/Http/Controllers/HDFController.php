@@ -65,7 +65,6 @@ class HDFController extends Controller
         $date = \Carbon\Carbon::today();
         $transactions = DB::table('tblhtransaction')
                 ->select()
-                ->where('DateCreated', '<=', $date)
                 ->orderBy('DateCreated', 'asc')
                 ->get()
                 ->groupBy(function($item) {
@@ -82,7 +81,8 @@ class HDFController extends Controller
                 ->orderBy('DateCreated', 'asc')
                 ->get()
                 ->groupBy(function($item) {
-                    return Carbon::parse($item->DateCreated)->format('H:i');
+                    // return Carbon::parse($item->DateCreated)->format('H:i');
+                    return Carbon::parse($item->DateCreated)->format('H:i A');
                 });
         return $newPersons;
     }

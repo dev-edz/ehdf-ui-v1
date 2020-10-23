@@ -25,6 +25,17 @@
                     </v-list-item-content>
                 </v-list-item>
             </v-list>
+            <template v-slot:append>
+                <div class="pa-2">
+                    <!-- <v-btn class="white--text" color="red" block depressed>Logout</v-btn> -->
+                    <img :src="qrCode"/>
+                    <!-- <vue-load-image>
+                        <img slot="image" :src="qrCode"/>
+                        <img slot="preloader" src="./image-loader.gif"/>
+                        <div slot="error">error message</div>
+                    </vue-load-image> -->
+                </div>
+            </template>
         </v-navigation-drawer>
         <v-app-bar 
             color="blue darken-1"
@@ -61,7 +72,11 @@
     </v-app>
 </template>
 <script>
+// import VueLoadImage from 'vue-load-image'
 export default {
+    // components: {
+    //     'vue-load-image': VueLoadImage
+    // },
     data(){
         return {
             drawer: {
@@ -72,13 +87,14 @@ export default {
                     ['Users', 'mdi-account', '/users'],
                 ]
             },
+            qrCode: '../img/ehdf_qr.png',
         }
     },
     methods: {
         toggleTheme(){
             this.$vuetify.theme.dark = !this.$vuetify.theme.dark;
         },
-    }
+    },
 }
 </script>
 <style>

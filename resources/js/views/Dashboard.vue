@@ -78,7 +78,7 @@ export default {
                     { title: 'All Transactions', icon: 'mdi-format-list-text', link: '/monitoring', counter: 0, color: 'orange', values: [], labels: [] },
                 ],
                 // infoGraphics: "www.github.com/dev-edz/ehdf-ui-v1/blob/master/resources/img/eHDF-Infographics.png"
-                infoGraphics: "../../img/ehdf_info.png"
+                infoGraphics: "../../img/ehdf_info2.png"
             }
         }
     },
@@ -109,7 +109,7 @@ export default {
                         this.dashboard.menus[0].values.push(item[1].length);
                     }
 
-                    console.log('success')
+                    console.log('persons summary...success')
                 }).catch(error => {
                     console.log('error here 2...', error)
                 });
@@ -142,11 +142,13 @@ export default {
                 this.dashboard.menus[1].counter = response.data.length;
                 window.vue.prototype.$http.get('/api/summary/newpersons')
                 .then(res => {
+                    let i = 1;
                     for (const item of Object.entries(res.data)) {
                         this.dashboard.menus[1].labels.push(item[0]);
-                        this.dashboard.menus[1].values.push(item[1].length);
+                        this.dashboard.menus[1].values.push(i);
+                        i += 1;
                     }
-                    console.log('success')
+                    console.log('new persons...success')
                 }).catch(error => {
                     console.log('error @ new persons', error)
                 });
