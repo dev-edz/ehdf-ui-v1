@@ -8,16 +8,16 @@
             <v-card-text>
                 <v-row v-if="indexedItems[0]">
                     <v-col cols="12" sm="12" md="3">
-                        FULLNAME: <div class="title text-uppercase">{{ indexedItems[0].fullname }}</div>
+                        FULLNAME: <div class="title text-uppercase font-weight-black">{{ indexedItems[0].fullname }}</div>
                     </v-col>
                     <v-col cols="12" sm="12" md="3">
-                        TEMPERATURE: <div class="display-2 text-uppercase">{{ indexedItems[0].Temperature }}</div>
+                        TEMPERATURE: <div class="title text-uppercase font-weight-black">{{ indexedItems[0].Temperature }}</div>
                     </v-col>
                     <v-col cols="12" sm="12" md="3">
-                        TIMESTAMP: <div class="title text-uppercase">{{ indexedItems[0].DateCreated }}</div>
+                        TIMESTAMP: <div class="title text-uppercase font-weight-black">{{ indexedItems[0].DateCreated }}</div>
                     </v-col>
                     <v-col cols="12" sm="12" md="3">
-                        CURRENT TIME: <div class="display-2 text-uppercase">{{ realtimeClock }}</div>
+                        CURRENT TIME: <div class="title text-uppercase font-weight-black">{{ realtimeClock }}</div>
                     </v-col>
                 </v-row>
             </v-card-text>
@@ -70,7 +70,7 @@ export default {
                         text: 'Office',
                         align: 'center',
                         sortable: false,
-                        value: 'Office',
+                        value: 'UserOffice',
                         divider: true
                     },
                     {
@@ -92,9 +92,10 @@ export default {
             return this.dataTable.items.map((item, index) => ({
                 id: index + 1,
                 fullname: item.USERFULLNAME || (item.FirstName + ' ' + item.MiddleName + ' ' + item.LastName + ' ' + item.SuffixName),
+                UserOffice: item.UserInfoID ? 'Philippine Overseas Employment Administration (POEA)' : item.Office,
                 ...item
             }))
-        }
+        },
     },
     methods: {
         loadTransactions(){
@@ -121,17 +122,32 @@ export default {
             var self = this;
             this.clockInterval = setInterval(function(){
                 var today = new Date();
-                var h = today.getHours();
-                var m = today.getMinutes();
-                var s = today.getSeconds();
-                m = self.checkTime(m);
-                s = self.checkTime(s);
-                self.realtimeClock = h + ":" + m + ":" + s;
+                self.realtimeClock = self.format12Hour(today);
+                // var h = today.getHours();
+                // var m = today.getMinutes();
+                // var s = today.getSeconds();
+                // m = self.checkTime(m);
+                // s = self.checkTime(s);
+                // self.realtimeClock = h + ":" + m + ":" + s;
             }, 500);
         },
         checkTime(t){
             if (t < 10) {t = "0" + t};  // add zero in front of numbers < 10
             return t;
+        },
+        format12Hour(date){
+            var h = date.getHours();
+            var m = date.getMinutes();
+            var s = date.getSeconds();
+            var ampm = h >= 12 ? 'pm' : 'am';
+
+            h = h % 12;
+            h = h ? h : 12;
+            m = m < 10 ? '0' + m : m;
+            s = s < 10 ? '0' + s : s;
+
+            var currentTime = h + ':' + m + ':' + s + ' ' + ampm;
+            return currentTime;
         }
 
     },
