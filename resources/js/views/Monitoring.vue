@@ -1,54 +1,50 @@
 <template>
     <div id="Monitoring">
-       <v-container fluid>
-        <v-card class="mx-auto my-3 floating" outlined>
-            <v-card-title class="green pa-2 ma-2 white--text justify-center">
-                LATEST LOG
-            </v-card-title>
-            <v-card-text>
-                <v-row v-if="indexedItems[0]">
-                    <v-col cols="12" sm="12" md="3">
-                        FULLNAME: <div class="title text-uppercase font-weight-black">{{ indexedItems[0].fullname }}</div>
-                    </v-col>
-                    <v-col cols="12" sm="12" md="3">
-                        TEMPERATURE: <div class="title text-uppercase font-weight-black">{{ indexedItems[0].Temperature }}</div>
-                    </v-col>
-                    <v-col cols="12" sm="12" md="3">
-                        TIMESTAMP: <div class="title text-uppercase font-weight-black">{{ indexedItems[0].DateCreated }}</div>
-                    </v-col>
-                    <v-col cols="12" sm="12" md="3">
-                        CURRENT TIME: <div class="title text-uppercase font-weight-black">{{ realtimeClock }}</div>
-                    </v-col>
-                </v-row>
-            </v-card-text>
-        </v-card>
-        <v-card class="mx-auto" outlined>
-            <v-card-title class="green pa-2 ma-2 white--text justify-center">DATA LOG</v-card-title>
-            <v-card-text>
+        <v-container fluid>
+            <v-row no-gutters class="mb-2">
+                <v-col cols="12" sm="12" md="4" class="d-flex py-0">
+                    <v-text-field
+                        class="text-uppercase font-weight-bold"
+                        v-model="search"
+                        outlined
+                        dense
+                        clearable
+                        label="Search...">
+                    </v-text-field>
+                </v-col>
+                <v-col cols="12" sm="12" md="4" offset-md="4" class="d-flex justify-end py-0">
+                    <v-btn depressed md12 color="warning">Download Data</v-btn>
+                </v-col>
+            </v-row>
+            <v-card outlined>
                 <v-data-table
-                    class="table-striped text-uppercase"
+                    class="table-striped text-uppercase grey lighten-4"
                     :headers="dataTable.headers"
                     :items="indexedItems"
                     :loading="loading"
                     :items-per-page="-1"
+                    :search="search"
                     hide-default-footer
                     fixed-header
-                    hover
-                    outline
+                    height="70vh"
+                    @click:row="handleRowClick"
                 >
+                    
                 </v-data-table>
-            </v-card-text>
-        </v-card>
-       </v-container>
+            </v-card>
+        </v-container>
     </div>
 </template>
 <script>
 export default {
     data(){
         return {
+            search: '',
             loading: false,
             realtimeClock: '',
             clockInterval: '',
+            selectingLogs: false,
+            selectedLogs: [],
             dataTable: {
                 headers: [
                     {
@@ -118,41 +114,27 @@ export default {
                 console.log(error);
             })
         },
-        getCurrentTime(){
-            var self = this;
-            this.clockInterval = setInterval(function(){
-                var today = new Date();
-                self.realtimeClock = self.format12Hour(today);
-                // var h = today.getHours();
-                // var m = today.getMinutes();
-                // var s = today.getSeconds();
-                // m = self.checkTime(m);
-                // s = self.checkTime(s);
-                // self.realtimeClock = h + ":" + m + ":" + s;
-            }, 500);
+        handleRowClick(item, row){
+            console.log(row);
+            if (row.isSelected === false){
+                row.select(true);
+                if (!this.selectedLogs.includes(item)) this.selectedLogs.push(item);
+            }
+            else {
+                const index = this.selectedLogs.indexOf(item);
+                this.selectedLogs.splice(index, 1);
+                row.select(false);
+            }                
+            
+            if (this.selectedLogs.length) this.selectingLogs = true
+            else this.selectingLogs = false
         },
-        checkTime(t){
-            if (t < 10) {t = "0" + t};  // add zero in front of numbers < 10
-            return t;
-        },
-        format12Hour(date){
-            var h = date.getHours();
-            var m = date.getMinutes();
-            var s = date.getSeconds();
-            var ampm = h >= 12 ? 'pm' : 'am';
-
-            h = h % 12;
-            h = h ? h : 12;
-            m = m < 10 ? '0' + m : m;
-            s = s < 10 ? '0' + s : s;
-
-            var currentTime = h + ':' + m + ':' + s + ' ' + ampm;
-            return currentTime;
+        handleClick(item, row){
+            console.log(item, row)
         }
 
     },
     mounted(){
-        this.getCurrentTime();
         this.loadTransactions();
 
         this.refreshInterval = setInterval(function(){
@@ -162,7 +144,11 @@ export default {
     },
     beforeDestroy(){
         clearInterval(this.refreshInterval);
-        clearInterval(this.clockInterval);
     }
 }
 </script>
+<style>
+    .theme--light.v-data-table tbody tr.v-data-table__selected {
+        background: skyblue!important;
+    }
+</style>

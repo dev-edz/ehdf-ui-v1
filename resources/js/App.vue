@@ -47,7 +47,7 @@
             <v-app-bar-nav-icon
                 @click.stop="drawer.isOpen = !drawer.isOpen"
             ></v-app-bar-nav-icon>
-            <v-toolbar-title>POEA - Health Declaration Information Portal</v-toolbar-title>
+            <v-toolbar-title></v-icon>POEA - Health Declaration Information Portal</v-toolbar-title>
             <v-spacer></v-spacer>
             <v-btn 
                 icon
@@ -59,7 +59,9 @@
         </v-app-bar>
 
         <v-main>
-            <router-view></router-view>
+            <div class="ma-4">
+                <router-view></router-view>
+            </div>
         </v-main>
         <v-footer app dark fixed height="25" class="pa-0">
             <v-col

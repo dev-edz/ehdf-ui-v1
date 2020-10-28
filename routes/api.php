@@ -22,3 +22,5 @@ Route::get('transactions', [HDFController::class, 'getTransactions']);
 Route::get('summary/persons', [HDFController::class, 'getRegisteredUserByDate']);
 Route::get('summary/transactions', [HDFController::class, 'getAllTransactionByDate']);
 Route::get('summary/newpersons', [HDFController::class, 'getLatestPersons']);
+
+Route::get('latest', [HDFController::class, 'getLatest']);

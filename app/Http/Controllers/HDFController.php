@@ -86,4 +86,29 @@ class HDFController extends Controller
                 });
         return $newPersons;
     }
+
+    public function getLatest(){
+        $transactions = DB::table('tblhtransaction')
+                    ->leftJoin('tbluserinfo', 'tblhtransaction.UserInfoID', '=', 'tbluserinfo.USERINFOID')
+                    ->leftJoin('tblhperson', 'tblhtransaction.PersonID', '=', 'tblhperson.Id')
+                    ->leftJoin('libcombinedoffices', 'tblhtransaction.Employer', '=', 'libcombinedoffices.Id')
+                    ->select(
+                        'tblhtransaction.Id', 
+                        'tblhtransaction.PersonID', 
+                        'tblhtransaction.UserInfoID', 
+                        'tbluserinfo.USERFULLNAME', 
+                        'libcombinedoffices.Office', 
+                        'tblhtransaction.OfficeVisit',
+                        'tblhtransaction.DateCreated',
+                        'tblhperson.FirstName',
+                        'tblhperson.MiddleName',
+                        'tblhperson.LastName',
+                        'tblhperson.SuffixName',
+                        'tblhtransaction.Temperature',
+                    )
+                    ->orderBy('tblhtransaction.DateCreated', 'desc')
+                    ->limit(1)->get();
+                    
+        return $transactions;
+    }
 }

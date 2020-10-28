@@ -1,89 +1,120 @@
 <template>
-    <div id="Dashboard">
-        <v-container>
-            <v-row dense>
-                <v-col cols="12" sm="12" md="6">
-                    <!-- <v-card class="pa-1" height="30vh">
-                        <v-card-title class="green pa-2 ma-2 white--text justify-center">UPDATES </v-card-title>
-                        <v-card-text>
-                            Updates goes here...
-                        </v-card-text>
-                    </v-card> -->
-                    <v-card class="mb-4"
-                        v-for="(menu, index) in dashboard.menus" :key="index"
-                        :color="menu.color" 
-                        dark 
-                        outlined 
-                        hover
-                        :to="menu.link"
+    <div>
+        <v-row fluid class="px-3" dense>
+            <v-col cols="12" sm="12" md="4"
+                v-for="(menu, index) in dashboard.menus" :key="index"
+                >
+                
+                <v-card 
+                    :color="menu.color"  
+                    outlined 
+                    hover
+                    :to="menu.link"
+                >
 
-                    >
-                        <v-card-title>
-                            <v-icon
-                                class="ml-4 mr-12"
-                                size="64"
-                            >
-                                {{ menu.icon }}
-                            </v-icon>
-                            <span class="text-uppercase">
-                                {{ menu.title }}
-                            </span>
-                            
-                            <v-spacer></v-spacer>
-                            <div class="display-2">
-                                <strong>{{ menu.counter }}</strong>
-                            </div>
-                            <!-- <v-row align="end">
-                                <div>
-                                    <span
-                                        class="display-0 font-weight-black"
-                                    >
-                                    <strong>{{ menu.title }}</strong>
-                                    <v-spacer></v-spacer>
-                                    {{ menu.counter }}</span>
-                                </div>
-                            </v-row> -->
-                        </v-card-title>
-                        <v-sparkline
-                            :value="menu.values"
-                            :labels="menu.labels"
-                            color="rgba(255, 255, 255, .7)"
-                            height="75"
-                            padding="18"
-                            stroke-linecap="round"
-                            auto-draw
-                            type="trend"
+                    <v-skeleton-loader
+                        v-if="!loading"
+                        class="mx-auto"
+                        type="card"
+                        max-height="170px"
+                    ></v-skeleton-loader>
+
+                    <v-card-title v-if="loading">
+                        <!-- <v-icon
+                            class=" mr-4"
+                            size="38"
                         >
+                            {{ menu.icon }}
+                        </v-icon> -->
+                        <span class="text-uppercase title font-weight-black white--text">
+                            {{ menu.title }}
+                        </span>
+                        
+                        <v-spacer></v-spacer>
+                        <div class="title font-weight-black white--text">
+                            <strong>{{ menu.counter }}</strong>
+                        </div>
+                    </v-card-title>
 
-                        </v-sparkline>
-                    </v-card>
-                </v-col>
-                <v-col cols="12" sm="12" md="6">
-                    <v-card class="pa-1" outlined>
-                        <img :src="dashboard.infoGraphics"/>
-                    </v-card>
-                </v-col>
-            </v-row>
-        </v-container>
+                    
+                    <v-sparkline 
+                        v-if="loading"
+                        :value="menu.values"
+                        :labels="menu.labels"
+                        class="ma-2"
+                        color="rgba(255, 255, 255, .7)"
+                        height="75"
+                        padding="18"
+                        stroke-linecap="round"
+                        auto-draw
+                        type="trend"
+                    >
+                    </v-sparkline>
+                </v-card>
+            </v-col>
+        </v-row>
+        <v-row fluid>
+            <v-col>
+                <v-card outlined class="ma-0">
+                    <!-- <v-card-title class="green pa-2 ma-2 white--text justify-center">
+                        LATEST LOG
+                    </v-card-title> -->
+                    <v-skeleton-loader
+                        v-if="!loading"
+                        class="mx-auto"
+                        type="card"
+                    ></v-skeleton-loader>
+                    <v-card-text v-if="loading">
+                        <v-row v-for="(log, index) in latestLog" :key="index">
+                            <v-col>
+                                <div class="d-flex justify-center font-weight-black text-uppercase">{{ log.title }}</div>
+                                <div class="d-flex justify-center display-2 font-weight-black text-uppercase">{{ log.value }}</div>
+                            </v-col>
+                        </v-row>
+                        <v-row>
+                            <v-col>
+                                <div class="d-flex justify-center font-weight-black text-uppercase">Current Time</div>
+                                <div class="d-flex justify-center display-2 font-weight-black text-uppercase">{{ realtimeClock }}</div>
+                            </v-col>
+                        </v-row>
+                    </v-card-text>
+                </v-card>
+            </v-col>
+        </v-row>
     </div>
 </template>
 <script>
 export default {
     data(){
         return {
+            loading: false,
             dashboard: {
                 menus: [
                     { title: 'Registered Users', icon: 'mdi-account-group', link: '#', counter: 0, color: 'blue darken-4', values: [], labels: [] },
                     { title: 'New Users', icon: 'mdi-account-details', link: '#', counter: 0, color: 'green', values: [], labels: [] },
-                    { title: 'All Transactions', icon: 'mdi-format-list-text', link: '/monitoring', counter: 0, color: 'orange', values: [], labels: [] },
+                    { title: 'Transactions', icon: 'mdi-format-list-text', link: '/monitoring', counter: 0, color: 'orange', values: [], labels: [] },
                 ],
                 // infoGraphics: "www.github.com/dev-edz/ehdf-ui-v1/blob/master/resources/img/eHDF-Infographics.png"
                 infoGraphics: "../../img/ehdf_info2.png"
-            }
+            },
+            latestLog: [
+                { title: 'Fullname', value: ''},
+                { title: 'Temperature', value: '' },
+                { title: 'Timestamp', value: '' },
+            ],
+            realtimeClock: '',
+            clockInterval: '',
+            refreshInterval: '',
+        }
+    },
+    computed: {
+        latestLogFormatter(){
+
         }
     },
     methods: {
         loadPersons(){
+        this.loading = true,
             window.vue.prototype.$http.get('/api/persons')
             .then(response => {
                 this.dashboard.menus[0].counter = response.data.length;
@@ -130,7 +161,6 @@ export default {
                 
                 this.dashboard.menus[2].labels[0] = i[0];
                 this.dashboard.menus[2].labels[i.length - 1] = i[i.length - 1];
-
             }).catch(error => {
                 console.log('error @ transaction summary', error)
             });
@@ -156,15 +186,61 @@ export default {
                 console.log(error);
             });
             
+        },
+        getCurrentTime(){
+            var self = this;
+            this.clockInterval = setInterval(function(){
+                var today = new Date();
+                self.realtimeClock = self.format12Hour(today);
+            }, 500);
+        },
+        format12Hour(date){
+            var h = date.getHours();
+            var m = date.getMinutes();
+            var s = date.getSeconds();
+            var ampm = h >= 12 ? 'pm' : 'am';
+
+            h = h % 12;
+            h = h ? h : 12;
+            m = m < 10 ? '0' + m : m;
+            s = s < 10 ? '0' + s : s;
+
+            var currentTime = h + ':' + m + ':' + s + ' ' + ampm;
+            return currentTime;
+        },
+        loadLatest(){
+            this.loading = true;
+            window.vue.prototype.$http.get('/api/latest')
+            .then(response => {
+                let user = response.data[0];
+                this.latestLog[0].value = user.USERFULLNAME || (user.FirstName + ' ' + user.MiddleName + ' ' + user.LastName + ' ' + user.SuffixName);
+                this.latestLog[1].value = user.Temperature + "°C";
+                this.latestLog[2].value = user.DateCreated;
+            }).catch(error => {
+                console.log(error);
+            });
         }
         
     },
     mounted(){
+        this.getCurrentTime();
         this.loadPersons();
         this.loadNewPersons();
         this.loadTransactions();
         this.loadPersonsSummary();
         this.loadTransactionsSummary();
+            
+
+        this.refreshInterval = setInterval(function(){
+            this.loadLatest();
+            console.log('refreshed...')
+        }.bind(this), 3000);
+
+        this.loading = false;
+    },
+    beforeDestroy(){
+        clearInterval(this.clockInterval);
+        clearInterval(this.refreshInterval);
     }
 }
 </script>
