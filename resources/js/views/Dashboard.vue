@@ -92,7 +92,7 @@ export default {
                 menus: [
                     { title: 'Registered Users', icon: 'mdi-account-group', link: '#', counter: 0, color: 'blue darken-4', values: [], labels: [] },
                     { title: 'New Users', icon: 'mdi-account-details', link: '#', counter: 0, color: 'green', values: [], labels: [] },
-                    { title: 'Transactions', icon: 'mdi-format-list-text', link: '/monitoring', counter: 0, color: 'orange', values: [], labels: [] },
+                    { title: 'Transactions', icon: 'mdi-format-list-text', link: '/monitor', counter: 0, color: 'orange', values: [], labels: [] },
                 ],
                 // infoGraphics: "www.github.com/dev-edz/ehdf-ui-v1/blob/master/resources/img/eHDF-Infographics.png"
                 infoGraphics: "../../img/ehdf_info2.png"
@@ -105,11 +105,6 @@ export default {
             realtimeClock: '',
             clockInterval: '',
             refreshInterval: '',
-        }
-    },
-    computed: {
-        latestLogFormatter(){
-
         }
     },
     methods: {

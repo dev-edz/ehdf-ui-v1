@@ -1,56 +1,62 @@
 <template>
-    <v-container fluid>
-        
+    <div>
         <v-row no-gutters class="mb-2">
-            <v-col cols="12" sm="12" md="4" class="d-flex py-0">
+            <v-col cols="12" sm="12" md="3" class="d-flex py-0">
                 <v-text-field
                     class="font-weight-bold"
                     v-model="search"
                     outlined
                     dense
                     clearable
-                    label="Search...">
+                    label="Search..."
+                    prepend-inner-icon="mdi-magnify">
                 </v-text-field>
             </v-col>
-            <v-col cols="12" sm="12" md="4" offset-md="4" class="d-flex justify-end py-0">
-                <v-btn
-                    v-if="selectingLogs" 
-                    text 
-                    md12 
-                    color="error"
-                    class="mr-3"
-                    @click="handleClearSelection();"
-                >
-                    Clear Selection
-                </v-btn>
-                <div class="pr-2">
+            <v-col cols="12" sm="12" md="6" offset-md="3" class="d-md-flex justify-md-end">
+                
+                <div class="mr-md-2 mb-2">
+                    <v-btn
+                        v-if="selectingLogs" 
+                        text 
+                        md12 
+                        block
+                        color="error"
+                        @click="handleClearSelection();"
+                    >
+                        Clear Selection
+                    </v-btn>
+                </div>
+                <div class="mr-md-2 mb-2">
                     <download-excel
                         v-if="selectingLogs"
                         :data="selectedLogs"
                         :fields="indexedHeaders"
                         name= 'downloaded_hdf_data.xls'>
                         <v-btn 
+                            block
                             outlined 
-                            md12 
+                            sm12
                             color="warning"
-                            class="mr-3"
                         >
-                            Download Selected ({{ this.selectedLogs.length }})
+                            Download ({{ this.selectedLogs.length }})
                         </v-btn>
                     </download-excel>
                 </div>
-                <download-excel 
-                    :data="indexedItems"
-                    :fields="indexedHeaders"
-                    name= 'downloaded_hdf_data.xls'>
-                    <v-btn 
-                        depressed 
-                        md12 
-                        color="warning"
-                    >
-                        Download All
-                    </v-btn>
-                </download-excel>
+                <div>
+                    <download-excel 
+                        :data="indexedItems"
+                        :fields="indexedHeaders"
+                        name= 'downloaded_hdf_data.xls'>
+                        <v-btn 
+                            block
+                            depressed 
+                            sm12 
+                            color="warning"
+                        >
+                            Download All
+                        </v-btn>
+                    </download-excel>
+                </div>
             </v-col>
         </v-row>
 
@@ -64,12 +70,12 @@
             :search="search"
             hide-default-footer
             fixed-header
-            height="75vh"
+            height="70vh"
             @click:row="handleRowClick"
         >
             
         </v-data-table>
-    </v-container>
+    </div>
 </template>
 <script>
 export default {

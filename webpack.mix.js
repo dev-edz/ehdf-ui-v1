@@ -13,23 +13,3 @@ const mix = require('laravel-mix');
 
 mix.js('resources/js/app.js', 'public/js')
     .sass('resources/sass/app.scss', 'public/css');
-
-module.exports = {
-    module: {
-        rules: [
-        {
-            test: /\.(png|jpg|gif)$/i,
-            use: [
-            {
-                loader: 'file-loader',
-                options: {
-                    name: '[path][name].[ext]',
-                    outputPath: 'images',
-                    limit: 8192,
-                },
-            },
-            ],
-        },
-        ],
-    },
-};

@@ -111,4 +111,12 @@ class HDFController extends Controller
                     
         return $transactions;
     }
+
+    public function getUserInfo(){
+        $users = DB::table('tbluserinfo')
+        ->orderBy('USERFULLNAME', 'asc')    
+        ->get();
+
+        return $users;
+    }
 }

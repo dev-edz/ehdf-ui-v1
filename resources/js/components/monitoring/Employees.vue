@@ -1,61 +1,83 @@
 <template>
-    <v-container fluid>
-        
+    <div>
         <v-row no-gutters class="mb-2">
-            <v-col cols="12" sm="12" md="4" class="d-flex py-0">
+            <v-col cols="12" sm="12" md="3" class="d-flex py-0">
                 <v-text-field
                     class="font-weight-bold"
                     v-model="search"
                     outlined
                     dense
                     clearable
-                    label="Search...">
+                    label="Search User..."
+                    prepend-inner-icon="mdi-magnify">
                 </v-text-field>
             </v-col>
-            <v-col cols="12" sm="12" md="4" offset-md="4" class="d-flex justify-end py-0">
-                <v-btn
-                    v-if="selectingLogs" 
-                    text 
-                    md12 
-                    color="error"
-                    class="mr-3"
-                    @click="handleClearSelection();"
-                >
-                    Clear Selection
-                </v-btn>
-                <div class="pr-2">
+            <v-col cols="12" sm="12" md="6" offset-md="3" class="d-md-flex justify-md-end">
+                
+                <div class="mr-md-2 mb-2">
+                    <v-btn
+                        v-if="selectingUserInfo" 
+                        text 
+                        md12 
+                        block
+                        color="error"
+                        @click="handleClearSelection();"
+                    >
+                        Clear Selection
+                    </v-btn>
+                </div>
+                <div class="mr-md-2 mb-2">
                     <download-excel
-                        v-if="selectingLogs"
-                        :data="selectedLogs"
+                        v-if="selectingUserInfo"
+                        :data="selectedUserInfo"
                         :fields="indexedHeaders"
                         name= 'downloaded_hdf_data.xls'>
                         <v-btn 
+                            block
                             outlined 
-                            md12 
+                            sm12
                             color="warning"
-                            class="mr-3"
                         >
-                            Download Selected ({{ this.selectedLogs.length }})
+                            Download ({{ this.selectedUserInfo.length }})
                         </v-btn>
                     </download-excel>
                 </div>
-                <download-excel 
-                    :data="indexedItems"
-                    :fields="indexedHeaders"
-                    name= 'downloaded_hdf_data.xls'>
+                <div class="mr-md-2 mb-2">
                     <v-btn 
-                        depressed 
-                        md12 
-                        color="warning"
+                        block
+                        outlined 
+                        sm12
+                        @click="refreshUserInfo()"
                     >
-                        Download All
+                        Refresh
+                        <v-icon
+                            right
+                            dark
+                        >
+                            mdi-refresh
+                        </v-icon>
                     </v-btn>
-                </download-excel>
+                </div>
+                <div>
+                    <download-excel 
+                        :data="indexedItems"
+                        :fields="indexedHeaders"
+                        name= 'downloaded_hdf_data.xls'>
+                        <v-btn 
+                            block
+                            depressed 
+                            sm12 
+                            color="warning"
+                        >
+                            Download All
+                        </v-btn>
+                    </download-excel>
+                </div>
             </v-col>
         </v-row>
 
         <v-data-table
-            ref="dtLogs"
+            ref="dtUserInfo"
             class="table-striped text-uppercase"
             :headers="dataTable.headers"
             :items="indexedItems"
@@ -64,12 +86,12 @@
             :search="search"
             hide-default-footer
             fixed-header
-            height="75vh"
+            height="70vh"
             @click:row="handleRowClick"
         >
             
         </v-data-table>
-    </v-container>
+    </div>
 </template>
 <script>
 export default {
@@ -79,8 +101,8 @@ export default {
             loading: false,
             realtimeClock: new Date(),
             clockInterval: '',
-            selectingLogs: false,
-            selectedLogs: [],
+            selectingUserInfo: false,
+            selectedUserInfo: [],
             dataTable: {
                 headers: [
                     {
@@ -104,15 +126,7 @@ export default {
                         sortable: false,
                         value: 'UserOffice',
                         divider: true
-                    },
-                    {
-                        text: 'Date & Time',
-                        align: 'center',
-                        sortable: true,
-                        value: 'DateCreated',
-                        divider: false,
-                        width: '20%',
-                    },
+                    }
                 ],
                 items: [],
                 refreshInterval: '',
@@ -121,7 +135,7 @@ export default {
                 Id: 'id',
                 Fullname: 'fullname',
                 Office: 'UserOffice',
-                "Time Stamp": 'DateCreated'
+                "Date Created": 'DateCreated'
             },
             // indexedHeaders: ["id", "fullname", "UserOffice", "DateCreated"]
         }
@@ -130,16 +144,17 @@ export default {
         indexedItems () {
             return this.dataTable.items.map((item, index) => ({
                 id: index + 1,
-                fullname: item.USERFULLNAME || (item.FirstName + ' ' + item.MiddleName + ' ' + item.LastName + ' ' + item.SuffixName),
-                UserOffice: item.UserInfoID ? 'Philippine Overseas Employment Administration (POEA)' : item.Office,
+                fullname: item.USERFULLNAME,
+                UserOffice: 'Philippine Overseas Employment Administration (POEA)',
+                DateCreated: item.DATECREATED,
                 ...item
             }))
         },
     },
     methods: {
-        loadTransactions(){
+        loadUserInfo(){
             this.loading = true;
-            window.vue.prototype.$http.get('/api/transactions')
+            window.vue.prototype.$http.get('/api/userinfo')
             .then(response => {
                 this.dataTable.items = response.data;
                 // this.dataTable.items["DateCreated"] = response.data["DateCreated"]
@@ -149,10 +164,12 @@ export default {
                 console.log(error);
             })
         },
-        refreshTransactions(){
-            window.vue.prototype.$http.get('/api/transactions')
+        refreshUserInfo(){
+            this.loading = true;
+            window.vue.prototype.$http.get('/api/userinfo')
             .then(response => {
                 this.dataTable.items = response.data;
+                this.loading = false;
             }).catch(error => {
                 console.log(error);
             })
@@ -161,41 +178,36 @@ export default {
             // console.log(row);
             if (row.isSelected === false){
                 row.select(true);
-                if (!this.selectedLogs.includes(item)) this.selectedLogs.push(item);
+                if (!this.selectedUserInfo.includes(item)) this.selectedUserInfo.push(item);
             }
             else {
-                const index = this.selectedLogs.indexOf(item);
-                this.selectedLogs.splice(index, 1);
+                const index = this.selectedUserInfo.indexOf(item);
+                this.selectedUserInfo.splice(index, 1);
                 row.select(false);
             }                
             
-            if (this.selectedLogs.length) this.selectingLogs = true
-            else this.selectingLogs = false
+            if (this.selectedUserInfo.length) this.selectingUserInfo = true
+            else this.selectingUserInfo = false
         },
         handleDownloads(){
             jsontoexcel.getXlsx(this.indexedItems, this.indexedHeaders, 'test.xls');
         },
         handleClearSelection(){
 
-            if (this.selectedLogs.length){
-                this.selectedLogs = []; 
-                this.selectingLogs = false;
+            if (this.selectedUserInfo.length){
+                this.selectedUserInfo = []; 
+                this.selectingUserInfo = false;
             }
-            this.$refs["dtLogs"].selection = 0;
+            this.$refs["dtUserInfo"].selection = 0;
             
         }
 
     },
     mounted(){
-        this.loadTransactions();
-
-        this.refreshInterval = setInterval(function(){
-            this.refreshTransactions();
-            console.log('refreshed...')
-        }.bind(this), 3000);
+        this.loadUserInfo();
     },
     beforeDestroy(){
-        clearInterval(this.refreshInterval);
+        console.log("Instance of Employees...Destroyed");
     }
 }
 </script>

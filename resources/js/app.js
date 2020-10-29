@@ -5,13 +5,16 @@ import vuetify from './plugins/vuetify'
 import App from './App.vue';
 import Axios from 'axios';
 
-import img from '../img/ehdf_info2.png';
-import img2 from '../img/ehdf_qr.png';
-
+import JsonExcel from "vue-json-excel";
 
 Vue.prototype.$http = Axios;
 window.vue = Vue;
 Vue.config.productionTip = false;
+Vue.component("downloadExcel", JsonExcel);
+
+// Monitor
+Vue.component('transactions-component', require('./components/monitoring/Transactions.vue').default);
+Vue.component('employees-component', require('./components/monitoring/Employees.vue').default);
 
 new Vue({
     router,

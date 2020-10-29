@@ -2,7 +2,6 @@
     <v-app>
         <v-navigation-drawer
             v-model="drawer.isOpen"
-            color=""
             dark
             width="180px"
             app
@@ -27,13 +26,10 @@
             </v-list>
             <template v-slot:append>
                 <div class="pa-2">
-                    <!-- <v-btn class="white--text" color="red" block depressed>Logout</v-btn> -->
-                    <img :src="qrCode"/>
-                    <!-- <vue-load-image>
-                        <img slot="image" :src="qrCode"/>
-                        <img slot="preloader" src="./image-loader.gif"/>
-                        <div slot="error">error message</div>
-                    </vue-load-image> -->
+                    <v-card elevation="4">
+                        <v-img src="/images/ehdf_qr.png"></v-img>
+                        <v-card-subtitle class="d-flex display-1 pa-0 justify-center text-uppercase">Scan Me</v-card-subtitle>
+                    </v-card>
                 </div>
             </template>
         </v-navigation-drawer>
@@ -47,7 +43,8 @@
             <v-app-bar-nav-icon
                 @click.stop="drawer.isOpen = !drawer.isOpen"
             ></v-app-bar-nav-icon>
-            <v-toolbar-title></v-icon>POEA - Health Declaration Information Portal</v-toolbar-title>
+            <v-toolbar-title>
+                POEA - Health Declaration Information Portal</v-toolbar-title>
             <v-spacer></v-spacer>
             <v-btn 
                 icon
@@ -74,22 +71,16 @@
     </v-app>
 </template>
 <script>
-// import VueLoadImage from 'vue-load-image'
 export default {
-    // components: {
-    //     'vue-load-image': VueLoadImage
-    // },
     data(){
         return {
             drawer: {
                 isOpen: true,
                 navItems: [
-                    ['Dashboard', 'mdi-view-dashboard-outline', '/'],
-                    ['Monitoring', 'mdi-clipboard-list-outline', '/monitoring'],
-                    ['Users', 'mdi-account', '/users'],
+                    ['Dashboard', 'mdi-view-dashboard-outline', '/'],       
+                    ['Monitor', 'mdi-monitor', '/monitor'],
                 ]
             },
-            qrCode: '../img/ehdf_qr.png',
         }
     },
     methods: {

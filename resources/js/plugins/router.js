@@ -1,8 +1,7 @@
 import Vue from 'vue';
 import VueRouter from 'vue-router';
 import Dashboard from '../views/Dashboard.vue';
-import Monitoring from '../views/Monitoring.vue'
-import Users from '../views/Users.vue'
+import Monitor from '../views/Monitor.vue'
 
 Vue.use(VueRouter);
 
@@ -13,14 +12,9 @@ const routes = [
     name: 'dashboard'
   },
   {
-    path: '/monitoring',
-    component: Monitoring,
-    name: 'monitoring'
-  },
-  {
-    path: '/users',
-    component: Users,
-    name: 'users'
+    path: '/monitor',
+    component: Monitor,
+    name: 'monitor'
   },
 ];
 
