@@ -42,6 +42,22 @@
                         </v-btn>
                     </download-excel>
                 </div>
+                <div class="mr-md-2 mb-2">
+                    <v-btn 
+                        block
+                        outlined 
+                        sm12
+                        @click="refreshTransactions()"
+                    >
+                        Refresh
+                        <v-icon
+                            right
+                            dark
+                        >
+                            mdi-refresh
+                        </v-icon>
+                    </v-btn>
+                </div>
                 <div>
                     <download-excel 
                         :data="indexedItems"
@@ -195,13 +211,14 @@ export default {
     mounted(){
         this.loadTransactions();
 
-        this.refreshInterval = setInterval(function(){
-            this.refreshTransactions();
-            console.log('refreshed...')
-        }.bind(this), 3000);
+        // this.refreshInterval = setInterval(function(){
+        //     this.refreshTransactions();
+        //     console.log('refreshed...')
+        // }.bind(this), 3000);
     },
     beforeDestroy(){
-        clearInterval(this.refreshInterval);
+        // clearInterval(this.refreshInterval);
+        console.log("Instance of Employees...Destroyed");
     }
 }
 </script>
