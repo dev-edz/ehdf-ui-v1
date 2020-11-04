@@ -121,6 +121,13 @@ export default {
                         divider: true
                     },
                     {
+                        text: 'Temperature  (°C)',
+                        align: 'center',
+                        sortable: false,
+                        value: 'Temperature',
+                        divider: true
+                    },
+                    {
                         text: 'Office',
                         align: 'center',
                         sortable: false,
@@ -142,6 +149,7 @@ export default {
             indexedHeaders: {
                 Id: 'id',
                 Fullname: 'fullname',
+                Temperature: 'Temperature',
                 Office: 'UserOffice',
                 "Time Stamp": 'DateCreated'
             },
